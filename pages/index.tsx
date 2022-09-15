@@ -77,7 +77,7 @@ export const getStaticProps: GetStaticProps = async () => {
       repositories: repoNames,
       date: new Date().toISOString() //vai pegar a data do servidor (serve para ver os momentos em que a página será revalidada)
     },
-    revalidate: 5 //quantos segundos a página vai manter em cache
+    revalidate: 60 * 60 * 2 //quantos segundos a página vai manter em cache - nesse caso 2h
   }
 }
 

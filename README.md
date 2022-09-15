@@ -94,10 +94,12 @@ export const getStaticProps: GetStaticProps = async () => {
       repositories: repoNames,
       date: new Date().toISOString() //vai pegar a data do servidor (serve para ver os momentos em que a página será revalidada)
     },
-    revalidate: 5 //quantos segundos a página vai manter em cache
+    revalidate: 60 * 60 * 2 //quantos segundos a página vai manter em cache (nesse caso 2h)
   }
 }
 ```
+### Atualização forçada
+Basta colocar esse código na route API que você quer que faça a revalidação forçada, antes do tempo pré definido<code>await res.revalidate('/rota')</code>, daí quando acessar essa rota 
 
 ## Páginas com atributos dinâmicos
 
@@ -114,5 +116,40 @@ Isso significa que vai querer passar um parâmetro
 
 
 ## API Routes
-
 São rotas que ao invés de retornar componente React, pode retornar um código que só existiria no backend
+
+ - Acessar Banco de Dados
+ - Se comunicar com APIs que precisam de segurança (ex: pagamentos)
+
+ ## Middleware
+ É um interceptador de requisição ou resposta, no caso do next é um interceptador de resposta
+
+ - Digamos que tenha uma página na aplicação que nunca muda, logo o que vem na cabeça é "fazer um getStaticProps", porém, indo mais a fundo, só pessoas logadas ou autorizadas poderão acessar essa página da aplicação.
+ </br>
+ O getStaticProps, executa na hora da build, assim, não tem como saber se o cliente tem permissão ou não para acessar aquela página. <strong>Para isso veio o Middleware</strong>
+
+ ### Como funciona
+ <ol>
+ <li>Criar <code>_middleware.ts</code>, dentro da pasta <code>pages</code></li>
+ <li>Exemplo de código</li> 
+ </ol>
+ 
+ ```tsx
+//Ele intercepta as requisições do usuário e o redireciona dependendo da sua permissão
+
+// middleware.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+// This function can be marked `async` if using `await` inside
+export function middleware(request: NextRequest) {
+  return NextResponse.redirect('/nova-rota-redirecionada')
+  //ou
+  return NextResponse.next() // pula esse middleware
+  //ou
+  return NextResponse.rewrite('/acesso-para-outra-rota')
+
+}
+
+ ```
+Dependendo da pasta onde você criar um carinha desse, ele só vai ser executado a partir daquela pasta
