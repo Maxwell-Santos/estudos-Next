@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next"
-import { GetServerSideProps } from "next"
+// import { GetServerSideProps } from "next"
 
 type RepoNamesProps = {
   name: string;

@@ -71,11 +71,11 @@ export const getServerSideProps:GetServerSideProps = async () =>{
 
 ```
 ## Como funciona o Static Props - Stale While Revalidate (SWR)
-### O Next chama de ISR - Incremental Static Regeneration
+### O Next chama de ISG - Incremental Static Generation
 <p>Gerar novamente páginas que são estáticas incrementalmente conforme a necessidade.</p>
 
 <p>O site vai armazenar uma versão dele em cache, por um tempo, para que outras pessoas possam acessá-lo e ele não precise sempre ficar batendo no banco de dados e essas coisas</p>
-<i>Isso é bom para quando o site mostra a mesma coisa e tem muitas pessoas acessando ao mesmo tempo, evita desgaste e lentidão para requisições no banco de dados</i>
+<i>Isso é bom para quando o site mostra a mesma coisa e tem muitas pessoas acessando ao mesmo tempo, evita desgaste e lentidão por conta das requisições no banco de dados</i>
 
 ```tsx
 export const getStaticProps: GetStaticProps = async () => {
@@ -98,6 +98,63 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 }
 ```
+### Página com parâmetro da url
+<p>Acessando, uma api que retorna uma lista de objetos json, e são muitos esses objetos, logo a requisição para a API, será paginada, ou seja, vai pegar, por exemplo, 10 objetos para cada página e a requisição só aceita uma página de cada vez.</p>
+
+#### Fallback
+<p>
+  Quando busca esse parâmetro que não existe na primeira página que foi criada de forma estática pelo Next, ai o opção do <code>fallback</code>, entra em ação <strong>esse atributo é booliano</strong>
+</p>
+
+ - fallback: true
+  - Quando uma pessoa tentar acessar a rota com um parâmetro que não tinha antes uma página ja gerada de forma estática, ele vai tentar procurar na API, para ver se existe aquela informação ou não. </br> Vai gerar uma nova página estática, (essas páginas estáticas são geradas em tempo de produção, na build do projeto, porém com <code>fallback: true</code>, ele vai fazer uma nova requisição na API, para pode criar essa página de forma estática também, mas em tempo de execução).
+
+- Quando usar: Para produtos de e-commerce, post de blogs, em resumo, aplicações que tem a possibilidade de criar um conteúdo novo, novas informações a todo momento. 
+
+```tsx
+//função assíncrona para dar a liberdade ao usuário de poder fazer chamadas API
+export const getStaticPaths: GetStaticPaths = async () => {
+
+  const response = await fetch('https://api.github.com/orgs/rocketseat/members')
+  const data = await response.json()
+
+  const paths = data.map((member: any) => {
+    return { params: {login: member.login} }
+  })
+  return{
+    paths, //tem que retornar um array 
+    fallback: true,
+  }
+}
+```
+- Gerar uma versão estática daquela página só se o cliente acessar, se não, nem gera
+```tsx
+export const getStaticPaths: GetStaticPaths = async () => {
+  //code
+  return{
+    paths: [],
+    fallback: true,
+  }
+}
+```
+- Gerar uma versão estática daquela das páginas mais acessadas (posts mais acessados caso seja um blog, por exemplo)
+```tsx
+//exemplo fictício
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = [...{post}]
+
+  //vai retornar um array com os posts com mais de 10.000 likes
+  const listPosts = posts.filter(post => post.like >= 10000)
+
+  const topsPost = listPosts
+
+  return{
+    paths: topPost, 
+    fallback: true, //só gera no momento que a rota for acessada
+  }
+}
+```
+
 ### Atualização forçada
 Basta colocar esse código na route API que você quer que faça a revalidação forçada, antes do tempo pré definido<code>await res.revalidate('/rota')</code>, daí quando acessar essa rota 
 
