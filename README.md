@@ -1,14 +1,14 @@
 # Sumário
-[Jeito tradicional de fazer um fetch Client Side Render](#jeito-tradicional-de-fazer-um-fetch-client-side-render)
-[Como funciona o Server Side Render](#como-funciona-o-server-side-render)
-[Como funciona o Static Props - Stale While Revalidate (SWR)](#como-funciona-o-static-props---stale-while-revalidate-swr)
-  [O Next chama de ISG - Incremental Static Generation](#o-next-chama-de-isg---incremental-static-generation)
-  [Página com parâmetro da url](#página-com-parâmetro-da-url)
-    [Fallback](#fallback)
-  [Atualização forçada](#atualização-forçada)
-[Páginas com atributos dinâmicos](#páginas-com-atributos-dinâmicos)
-[Páginas com atributos dinâmicos](#páginas-com-atributos-dinâmicos)
-[API Routes](#api-routes)
+- [Jeito tradicional de fazer um fetch Client Side Render](#jeito-tradicional-de-fazer-um-fetch-client-side-render)
+- [Como funciona o Server Side Render](#como-funciona-o-server-side-render)
+- [Como funciona o Static Props - Stale While Revalidate (SWR)](#como-funciona-o-static-props---stale-while-revalidate-swr)
+  - [O Next chama de ISG - Incremental Static Generation](#o-next-chama-de-isg---incremental-static-generation)
+  - [Página com parâmetro da url](#página-com-parâmetro-da-url)
+    - [Fallback](#fallback)
+  - [Atualização forçada](#atualização-forçada)
+- [Páginas com atributos dinâmicos](#páginas-com-atributos-dinâmicos)
+- [Páginas com atributos dinâmicos](#páginas-com-atributos-dinâmicos)
+- [API Routes](#api-routes)
 # Aprendendo NEXT
 
 <p>O Next basicamente cria um servicinho node no frontend, tipo um semi backend no frontend, isso é bom para poder fazer requisições no lado do servidor</p>
